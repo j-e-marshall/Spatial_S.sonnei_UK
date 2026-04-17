@@ -13,6 +13,8 @@ install.packages("doParallel")
 library(doParallel)  
 rstan_options(auto_write = TRUE)
 library(devtools)
+install.packages("kable")
+library(knitr)
 
 ############# Model
 model.MCMC <- stan_model(file = "Model_fitness_1f0_1_switch_reals_independent1221.stan")
@@ -24,7 +26,6 @@ model.MCMC <- stan_model(file = "Model_fitness_1f0_1_switch_reals_independent122
 data.MCMC_CIP = readRDS(file = 'Data_model_independent_CIP.rds')
 
 ############# parameters #############################################
-
 ## introduction
 data.MCMC_CIP$yearF0 =array(rep(1, data.MCMC_CIP$nb_groups))
 data.MCMC_CIP$yearIntroduction =array(rep(12, data.MCMC_CIP$nb_groups))
@@ -41,7 +42,6 @@ f0_init = function(nb_geno){
   return(res)
 }
 
-
 ##################################################################################
 ## Run MCMC 
 ##################################################################################
@@ -51,11 +51,8 @@ no_cores = 3
 registerDoParallel(cores=no_cores)  
 cl = makeCluster(no_cores) 
 
-
 #CIP
 name_file = 'Output_per_allgroups_CIP'
-
-set.seed(111)
 
 for(i in 1:3) {
   print(paste0('Running chain n = ', i))
@@ -174,9 +171,6 @@ datindeplong_filt$changeinmean <- exp(datindeplong_filt$Mean_pre) - exp(datindep
 datindeplong_filt$changeupperci <- exp(datindeplong_filt$q972.5_pre) - exp(datindeplong_filt$q2.5_post)
 datindeplong_filt$changelowerci <- exp(datindeplong_filt$q2.5_pre) - exp(datindeplong_filt$q972.5_post)
 
-install.packages("kable")
-library(knitr)
-
 datindeplong_filt <- datindeplong_filt %>%
   mutate(
     estimate_CI_pre_exp = sprintf("%.2f (%.2f, %.2f)", exp(Mean_pre), exp(q2.5_pre), exp(q972.5_pre)),
@@ -192,12 +186,6 @@ kable(
 ################################################################################
 ## Evaluate Different F0 and Switch Years
 ##################################################################################
-library(rstan)
-library(RColorBrewer)
-library(binom)
-library(loo)
-
-## Load fit
 set.seed(111)
 years<-seq(1,17,by=1)
 dfyears<- data.frame(years)
@@ -396,8 +384,6 @@ for(c in 1:fit$data$nb_groups){
 }
 dev.off()
 
-
-
 rd = c(1) ## order plot group
 cols = RColorBrewer::brewer.pal('Set1', n = 1)
 threshold = 0
@@ -480,7 +466,6 @@ View(freqs_obs)
 data.MCMC_CRO = readRDS(file = 'Data_model_independent_CRO.rds')
 
 ############# parameters #############################################
-
 ## introduction
 data.MCMC_CRO$yearF0 =array(rep(9, data.MCMC_CRO$nb_groups))
 data.MCMC_CRO$yearIntroduction =array(rep(15, data.MCMC_CRO$nb_groups))
@@ -507,11 +492,8 @@ no_cores = 3
 registerDoParallel(cores=no_cores)  
 cl = makeCluster(no_cores) 
 
-
 #CRO
 name_file = 'Output_per_allgroups_CRO'
-
-set.seed(111)
 
 for(i in 1:3) {
   print(paste0('Running chain n = ', i))
@@ -552,9 +534,7 @@ saveRDS(fit, paste0(name_file, '_fit_all.rds'))
 print('Writing chains')
 saveRDS(Chains, paste0(name_file, '_chains_all.rds'))
 
-
 ################################################################################
-#look at WAIC
 log_lik_1 <- extract_log_lik(fit$fit, merge_chains = F)
 r_eff <- relative_eff(exp(log_lik_1), cores = 2)
 loo_1 <- loo(log_lik_1, r_eff = r_eff, cores = 2)
@@ -573,7 +553,6 @@ summary(as_draws(tracevars))$rhat
 effectiveSize(tracevars)
 
 ################################################################################
-
 ## Load fit
 ## Chains
 nonpmsm<- as.matrix(fit$fit, pars = c("fitness_genotypes_vector_post_switch[1]"))
@@ -591,7 +570,6 @@ datindep[1,1:6] <-c("Non-pMSM",mean(nonpmsm), c(quantile(nonpmsm, c(0.025,0.975,
 datindep[2,1:6] <-c("pMSM",mean(pmsm), c(quantile(pmsm, c(0.025,0.975, 0.5))),"Post")
 datindep[3,1:6] <-c("Travel",mean(trav), c(quantile(trav, c(0.025,0.975, 0.5))),"Post")
 
-
 datindep[4,1:6] <-c("Non-pMSM",mean(nonpmsmpre), quantile(nonpmsmpre, c(0.025,0.975, 0.5)),"Pre")
 datindep[5,1:6] <-c("pMSM",mean(pmsmpre), quantile(pmsmpre, c(0.025,0.975, 0.5)),"Pre")
 datindep[6,1:6] <-c("Travel",mean(travpre), quantile(travpre, c(0.025,0.975, 0.5)),"Pre")
@@ -601,7 +579,7 @@ datindep$Mean <-as.numeric(datindep$Mean)
 datindep$q2.5 <-as.numeric(datindep$q2.5)
 datindep$q972.5 <-as.numeric(datindep$q972.5)
 
-plot1 <- ggplot(datindep, aes(x = Group, y = Mean, color = Switch)) +
+ggplot(datindep, aes(x = Group, y = Mean, color = Switch)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_errorbar(
     aes(ymin = q2.5, ymax = q972.5),
@@ -611,8 +589,6 @@ plot1 <- ggplot(datindep, aes(x = Group, y = Mean, color = Switch)) +
   labs(x = "Group", y = "CRO Relative Fitness") +
   theme_classic()+
   geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.6) 
-
-ggsave("CIP_switch_2015est_031626.pdf",plot1, height = 4, width = 5)
 
 datindeppost_pre<- datindep[4:6,]
 colnames(datindeppost_pre)<- c("Mean_pre", "q2.5_pre", "q972.5_pre", "q50_pre")
@@ -644,13 +620,6 @@ kable(
 ################################################################################
 ## Evaluate Different F0 and Switch Years
 ##################################################################################
-library(rstan)
-library(RColorBrewer)
-library(binom)
-library(loo)
-
-
-## Load fit
 set.seed(111)
 years<-seq(1,17,by=1)
 dfyears<- data.frame(years)
@@ -716,7 +685,8 @@ longwaic$switchyear <- as.numeric(longwaic$switchclean)+2003
 longwaic$switches <- paste0(longwaic$startyear, sep = " , ",longwaic$switchyear)
 longwaic<- longwaic %>% filter(!is.na(WAIC) & !is.na(switchclean))
 waicplotall<-ggplot(aes(x = reorder(switches,WAIC), y = WAIC), data = longwaic) +geom_line(linetype= 2, color = "grey")+ geom_point(size=2)+theme_classic()
-longwaic2<- longwaic %>%slice_min(WAIC, n = 25)
+
+                                            longwaic2<- longwaic %>%slice_min(WAIC, n = 25)
 longwaic2[1,]
 waicplotallfilt<-ggplot(aes(x = reorder(switches,WAIC), y = WAIC), data = longwaic2) +geom_line(linetype= 2, color = "grey")+ geom_point(size=2)+theme_classic()+ theme(axis.text.x=element_text(angle=90, hjust=1))
 
