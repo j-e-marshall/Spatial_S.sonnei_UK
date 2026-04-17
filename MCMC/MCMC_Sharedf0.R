@@ -13,7 +13,8 @@ install.packages("doParallel")
 library(doParallel)  
 rstan_options(auto_write = TRUE)
 library(devtools)
-
+install.packages("kable")
+library(knitr)
 
 ############# Model
 model.MCMC <- stan_model(file = "Model_fitness_1f0_1_switch_reals_independent1221.stan")
@@ -40,8 +41,6 @@ f0_init = function(nb_geno){
   return(res)
 }
 
-
-
 ##################################################################################
 ## Run MCMC 
 ##################################################################################
@@ -54,8 +53,6 @@ cl = makeCluster(no_cores)
 
 #AZ
 name_file = 'Output_per_allgroups_AZ'
-
-set.seed(111)
 
 for(i in 1:3) {
   print(paste0('Running chain n = ', i))
@@ -116,7 +113,7 @@ library(posterior)
 traceplot<- mcmc_trace(tracevars) + theme_classic() + theme(
   axis.text.x = element_text(size = 12),
   axis.text.y = element_text(size = 12))
-#ggsave(traceplot, file = "traceplotall.pdf", width = 10, height =6)
+
 traceplot
 summary(as_draws(tracevars))
 effectiveSize(tracevars)
@@ -150,7 +147,7 @@ datindep$Mean <-as.numeric(datindep$Mean)
 datindep$q2.5 <-as.numeric(datindep$q2.5)
 datindep$q972.5 <-as.numeric(datindep$q972.5)
 
-plot1 <- ggplot(datindep, aes(x = Group, y = Mean, color = Switch)) +
+ggplot(datindep, aes(x = Group, y = Mean, color = Switch)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_errorbar(
     aes(ymin = q2.5, ymax = q972.5),
@@ -176,9 +173,6 @@ datindeplong_filt$changeinmean <- exp(datindeplong_filt$Mean_pre) - exp(datindep
 datindeplong_filt$changeupperci <- exp(datindeplong_filt$q972.5_pre) - exp(datindeplong_filt$q2.5_post)
 datindeplong_filt$changelowerci <- exp(datindeplong_filt$q2.5_pre) - exp(datindeplong_filt$q972.5_post)
 
-install.packages("kable")
-library(knitr)
-
 datindeplong_filt <- datindeplong_filt %>%
   mutate(
     estimate_CI_pre_exp = sprintf("%.2f (%.2f, %.2f)", exp(Mean_pre), exp(q2.5_pre), exp(q972.5_pre)),
@@ -194,13 +188,7 @@ kable(
 ################################################################################
 ## Evaluate Different F0 and Switch Years
 ##################################################################################
-library(rstan)
-library(RColorBrewer)
-library(binom)
-library(loo)
 
-
-## Load fit
 set.seed(111)
 years<-seq(1,17,by=1)
 dfyears<- data.frame(years)
