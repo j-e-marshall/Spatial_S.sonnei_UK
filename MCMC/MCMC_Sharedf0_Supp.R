@@ -162,14 +162,17 @@ colnames(datindeppost_pre)<- c("Group","Mean_pre", "q2.5_pre", "q972.5_pre", "q5
 datindeppost_post<- datindep[1:3,]
 colnames(datindeppost_post)<- c("Group","Mean_post", "q2.5_post", "q972.5_post", "q50_post", "Switch")
 datindeplong<- left_join(datindeppost_post,datindeppost_pre, by = "Group")
-datindeplong$deltamean = datindeplong$Mean_post-datindeplong$Mean_pre
-datindeplong$deltauci = datindeplong$q972.5_post-datindeplong$q2.5_pre
-datindeplong$deltalci = datindeplong$q2.5_post-datindeplong$q972.5_pre
 datindeplong_filt<- datindeplong %>% dplyr::select(Group, Mean_pre, q2.5_pre, q972.5_pre,Mean_post, q2.5_post, q972.5_post)
 
-datindeplong_filt$changeinmean <- exp(datindeplong_filt$Mean_pre) - exp(datindeplong_filt$Mean_post)
-datindeplong_filt$changeupperci <- exp(datindeplong_filt$q972.5_pre) - exp(datindeplong_filt$q2.5_post)
-datindeplong_filt$changelowerci <- exp(datindeplong_filt$q2.5_pre) - exp(datindeplong_filt$q972.5_post)
+difference_non<- exp(nonpmsm) - exp(nonpmsmpre)
+difference_pmsm<- exp(pmsm) - exp(pmsmpre)
+difference_trav<- exp(trav) - exp(travpre)
+
+dat_diff <- rbind(
+  c("non-pMSM", round(mean(diff_nonpmsm), digits = 2), round(quantile(diff_nonpmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
+  c("pMSM", round(mean(difference_pmsm), digits = 2),round(quantile(diff_pmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
+  c("Travel",round(mean(difference_trav), digits = 2), round(quantile(difference_trav, probs =c(0.025, 0.975, 0.5)), digits = 2)))
+
 
 datindeplong_filt <- datindeplong_filt %>%
   mutate(
@@ -596,14 +599,17 @@ datindeppost_post<- datindep[1:3,]
 colnames(datindeppost_post)<- c("Mean_post", "q2.5_post", "q972.5_post", "q50_post")
 
 datindeplong<- left_join(datindeppost_post,datindeppost_pre, by = "Group")
-datindeplong$deltamean = datindeplong$Mean_post-datindeplong$Mean_pre
-datindeplong$deltauci = datindeplong$q972.5_post-datindeplong$q2.5_pre
-datindeplong$deltalci = datindeplong$q2.5_post-datindeplong$q972.5_pre
-datindeplong_filt<- datindeplong %>% dplyr::select(Group, Mean_pre, q2.5_pre, q972.5_pre,Mean_post, q2.5_post, q972.5_post)
 
-datindeplong_filt$changeinmean <- exp(datindeplong_filt$Mean_pre) - exp(datindeplong_filt$Mean_post)
-datindeplong_filt$changeupperci <- exp(datindeplong_filt$q972.5_pre) - exp(datindeplong_filt$q2.5_post)
-datindeplong_filt$changelowerci <- exp(datindeplong_filt$q2.5_pre) - exp(datindeplong_filt$q972.5_post)
+                                            difference_non<- exp(nonpmsm) - exp(nonpmsmpre)
+difference_pmsm<- exp(pmsm) - exp(pmsmpre)
+difference_trav<- exp(trav) - exp(travpre)
+
+dat_diff <- rbind(
+  c("non-pMSM", round(mean(diff_nonpmsm), digits = 2), round(quantile(diff_nonpmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
+  c("pMSM", round(mean(difference_pmsm), digits = 2),round(quantile(diff_pmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
+  c("Travel",round(mean(difference_trav), digits = 2), round(quantile(difference_trav, probs =c(0.025, 0.975, 0.5)), digits = 2)))
+                                            
+datindeplong_filt<- datindeplong %>% dplyr::select(Group, Mean_pre, q2.5_pre, q972.5_pre,Mean_post, q2.5_post, q972.5_post)
 
 datindeplong_filt <- datindeplong_filt %>%
   mutate(
