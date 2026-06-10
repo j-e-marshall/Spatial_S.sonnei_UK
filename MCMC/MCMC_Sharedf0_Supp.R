@@ -146,10 +146,10 @@ datindep$Mean <-as.numeric(datindep$Mean)
 datindep$q2.5 <-as.numeric(datindep$q2.5)
 datindep$q972.5 <-as.numeric(datindep$q972.5)
 
-plot1 <- ggplot(datindep, aes(x = Group, y = Mean, color = Switch)) +
+plot1 <- ggplot(datindep, aes(x = Group, y = exp(Mean), color = Switch)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_errorbar(
-    aes(ymin = q2.5, ymax = q972.5),
+    aes(ymin = exp(q2.5), ymax = exp(q972.5)),
     width = 0.2,
     position = position_dodge(width = 0.5),linetype = "dashed"
   ) +
@@ -582,10 +582,10 @@ datindep$Mean <-as.numeric(datindep$Mean)
 datindep$q2.5 <-as.numeric(datindep$q2.5)
 datindep$q972.5 <-as.numeric(datindep$q972.5)
 
-ggplot(datindep, aes(x = Group, y = Mean, color = Switch)) +
+ggplot(datindep, aes(x = Group, y = exp(Mean), color = Switch)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_errorbar(
-    aes(ymin = q2.5, ymax = q972.5),
+    aes(ymin = exp(q2.5), ymax = exp(q972.5)),
     width = 0.2,
     position = position_dodge(width = 0.5),linetype = "dashed"
   ) +
