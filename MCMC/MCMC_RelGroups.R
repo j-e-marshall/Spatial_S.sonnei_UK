@@ -20,6 +20,7 @@ data.MCMCrelnon<- readRDS('data.MCMCrelnon.rds')
 data.MCMCreltrav<- readRDS('data.MCMCreltrav.rds')
 
 ##read in subsampling data sets here for subsampling sensitivity analysis 
+#set.seed(111)
 #data.MCMCrelnon<- readRDS('data.MCMCrelnon_supp.rds')
 #data.MCMCreltrav<- readRDS('data.MCMCreltrav_supp.rds')
 
@@ -204,8 +205,8 @@ datindep[2,4]<- quantile(t1reltrav, c(0.975))
 datindep[2,5]<- quantile(t1reltrav, c(0.50))
 
 
-plotgrowth<- datindep %>% ggplot(aes(x= Group, y = Mean)) + geom_point(aes(colour=Group)) + 
-  geom_errorbar(aes(ymin=q2.5, ymax=q972.5, ,colour=Group), width = 0.2) + theme_classic()  + labs(title = "Annual Growth Rate by Group Relative to Travel", y = "Annual Growth Rate", x = "Group")+ scale_y_continuous("Annual Growth Rate Relative to Travel", expand = c(0, 0), limits = c(-.2, .3))  + theme_classic()  + geom_hline(yintercept=0,  linetype="dashed", color ="#f85c06")+ scale_color_manual(values = c("#b21819", "#088978"))
+plotgrowth<- datindep %>% ggplot(aes(x= Group, y = exp(Mean))) + geom_point(aes(colour=Group)) + 
+  geom_errorbar(aes(ymin=exp(q2.5), ymax=exp(q972.5), ,colour=Group), width = 0.2) + theme_classic()  + labs(title = "Annual Growth Rate by Group Relative to Travel", y = "Annual Growth Rate", x = "Group")+ scale_y_continuous("Annual Growth Rate Relative to Travel", expand = c(0, 0), limits = c(-.2, .3))  + theme_classic()  + geom_hline(yintercept=0,  linetype="dashed", color ="#f85c06")+ scale_color_manual(values = c("#b21819", "#088978"))
 
 ############################################################################################
 ## Plot fits for model, per group
