@@ -196,6 +196,9 @@ catchtt<- data.frame(matrix(NA, nrow = 17, ncol = 18))
 catchtt$X1<- years
 catchttwaic<-catchttpwaic<- as.matrix(catchtt)
 
+colnames(catchttwaic)[2:18]<- seq(2004,2020,1)
+colnames(catchttpwaic)[2:18]<- seq(2004,2020,1)
+
 data.MCMC_CIP = readRDS(file = 'Data_model_independent_CIP.rds')
 name_file = 'Output_per_cipswitch'
 
@@ -245,17 +248,16 @@ for(l in 1:17) {
     }}}
 
 longwaic <- data.frame(catchttwaic) %>% tibble::rownames_to_column(var = "F0") %>% pivot_longer(cols = starts_with(c("X")), names_to = "Switch", values_to = "WAIC")
-longwaic<- longwaic %>% filter(Switch != "X1" & Switch != "X2")
-longwaic$switchclean <- as.numeric(gsub('X','',longwaic$Switch))-1
+
+longwaic<- longwaic %>% filter(Switch != "X1" & Switch != "X2004")
+longwaic$switchyear <- as.numeric(gsub('X','',longwaic$Switch))
 longwaic$startyear <- as.numeric(longwaic$F0)+2003
-longwaic$switchyear <- as.numeric(longwaic$switchclean)+2003
 
 longwaic$switches <- paste0(longwaic$startyear, sep = " , ",longwaic$switchyear)
 longwaic<- longwaic %>% filter(!is.na(WAIC) & !is.na(switchclean))
 waicplotall<-ggplot(aes(x = reorder(switches,WAIC), y = WAIC), data = longwaic) +geom_line(linetype= 2, color = "grey")+ geom_point(size=2)+theme_classic()
 
 longwaic2<- longwaic %>%slice_min(WAIC, n = 25)
-longwaic2[1,]
 waicplotallcipfilt<-ggplot(aes(x = reorder(switches,WAIC), y = WAIC), data = longwaic2) +geom_line(linetype= 2, color = "grey")+ geom_point(size=2)+theme_classic()+ theme(axis.text.x=element_text(angle=90, hjust=1))
 
 ############################################################################################
@@ -632,6 +634,9 @@ dfyears<- data.frame(years)
 catchtt<- data.frame(matrix(NA, nrow = 17, ncol = 18))
 catchtt$X1<- years
 catchttwaic<-catchttpwaic<- as.matrix(catchtt)
+                                            
+colnames(catchttwaic)[2:18]<- seq(2004,2020,1)
+colnames(catchttpwaic)[2:18]<- seq(2004,2020,1)
 
 data.MCMC_CRO = readRDS(file = 'Data_model_independent_CRO.rds')
 name_file = 'Output_per_croswitch'
@@ -683,10 +688,9 @@ for(l in 1:17) {
 
 longwaic <- data.frame(catchttwaic) %>% tibble::rownames_to_column(var = "F0") %>% pivot_longer(cols = starts_with(c("X")), names_to = "Switch", values_to = "WAIC")
 
-longwaic<- longwaic %>% filter(Switch != "X1" & Switch != "X2")
-longwaic$switchclean <- as.numeric(gsub('X','',longwaic$Switch))-1
+longwaic<- longwaic %>% filter(Switch != "X1" & Switch != "X2004")
+longwaic$switchyear <- as.numeric(gsub('X','',longwaic$Switch))
 longwaic$startyear <- as.numeric(longwaic$F0)+2003
-longwaic$switchyear <- as.numeric(longwaic$switchclean)+2003
 
 longwaic$switches <- paste0(longwaic$startyear, sep = " , ",longwaic$switchyear)
 longwaic<- longwaic %>% filter(!is.na(WAIC) & !is.na(switchclean))
