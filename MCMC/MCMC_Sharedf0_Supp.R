@@ -146,16 +146,17 @@ datindep$Mean <-as.numeric(datindep$Mean)
 datindep$q2.5 <-as.numeric(datindep$q2.5)
 datindep$q972.5 <-as.numeric(datindep$q972.5)
 
-plot1 <- ggplot(datindep, aes(x = Group, y = exp(Mean), color = Switch)) +
+plot1_CIP <- ggplot(datindep, aes(x = Group, y = exp(Mean), color = Switch)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_errorbar(
     aes(ymin = exp(q2.5), ymax = exp(q972.5)),
     width = 0.2,
     position = position_dodge(width = 0.5),linetype = "dashed"
   ) +
+   scale_y_continuous(trans = "log", limits = c(1, 2), breaks = c(1,1.5, 2))+
   labs(x = "Group", y = "CIP Relative Fitness") +
   theme_classic()+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.6) 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black", linewidth = 0.6) 
 
 datindeppost_pre<- datindep[4:6,]
 colnames(datindeppost_pre)<- c("Group","Mean_pre", "q2.5_pre", "q972.5_pre", "q50_pre", "Switch")
@@ -584,16 +585,17 @@ datindep$Mean <-as.numeric(datindep$Mean)
 datindep$q2.5 <-as.numeric(datindep$q2.5)
 datindep$q972.5 <-as.numeric(datindep$q972.5)
 
-ggplot(datindep, aes(x = Group, y = exp(Mean), color = Switch)) +
+plot1_CRO <- ggplot(datindep, aes(x = Group, y = exp(Mean), color = Switch)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   geom_errorbar(
     aes(ymin = exp(q2.5), ymax = exp(q972.5)),
     width = 0.2,
     position = position_dodge(width = 0.5),linetype = "dashed"
   ) +
+  scale_y_continuous(trans = "log", limits = c(0.85, 1.95), breaks = c(0.75,1, 1.5))+
   labs(x = "Group", y = "CRO Relative Fitness") +
   theme_classic()+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "black", linewidth = 0.6) 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black", linewidth = 0.6) 
 
 datindeppost_pre<- datindep[4:6,]
 colnames(datindeppost_pre)<- c("Mean_pre", "q2.5_pre", "q972.5_pre", "q50_pre")
