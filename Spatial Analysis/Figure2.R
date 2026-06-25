@@ -509,7 +509,7 @@ oddsratio_bootstrapbywindows <- function(x, geo_matsame,geomatdiff, evol_mat){
 #set windows
 set.seed(111)
 
-nboot = 10
+nboot=50
 nsim=10
 Pmin = c(seq(0, 17.5,2.5), 20)
 Pmax<- c(NA,NA,NA,NA,NA,NA,NA,NA)
