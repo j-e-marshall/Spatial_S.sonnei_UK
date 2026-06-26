@@ -392,7 +392,6 @@ qt_0_par2 <- dist_par2(0)
 
 dist_par3<- ecdf(pars[3,])
 qt_0_par3 <- dist_par3(0)
-quantile(pars[2,], probs = c(0))
 
 quantile(pars[2,], probs = c(0.025, 0.975))
 mean(pars[2,])
