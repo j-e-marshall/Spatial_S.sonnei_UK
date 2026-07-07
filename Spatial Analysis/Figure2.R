@@ -31,7 +31,7 @@ hptdat <- hptgeocode3
 #pMSM
 pmsmall <- hptgeocode3 %>% filter(Group == "pMSM")
 
-#uncomment to generate matricies for 50% subsampling supp. analysis 
+#generate subsampled pMSM set for 50% subsampling supp. analysis, update pMSM filtering accordingly
 #idsmsm <- sample(unique(pmsmall$Accession), floor(length(unique(pmsmall$Accession))/2), replace = F)
 
 idsmsm <- unique(pmsmall$Accession)
