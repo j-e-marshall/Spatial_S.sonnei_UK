@@ -76,7 +76,7 @@ clade_number_array_freq_ref[which(is.na(clade_number_array_freq_ref) == T)] = 0
 
 ## Counts, per group, per year, for the ref clade
 clade_number_array_ref = clade_number_array[ref_clade,,]
-clade_number_array_ref1 <- t(t(clade_number_array_ref))
+clade_number_array_ref1 <- clade_number_array_ref
 clade_number_array_ref = array(clade_number_array_ref, dim=c(nb_clades-1, nb_years, nb_groups))
 
 ## Counts, per group, per year, per clade (without ref clade)
@@ -201,7 +201,7 @@ clade_number_array_freq_ref[which(is.na(clade_number_array_freq_ref) == T)] = 0
 ## Counts, per group, per year, for the ref clade
 
 clade_number_array_ref = clade_number_array[ref_clade,,]
-clade_number_array_ref1 <- t(t(clade_number_array_ref))
+clade_number_array_ref1 <- clade_number_array_ref
 clade_number_array_ref = array(clade_number_array_ref, dim=c(nb_clades-1, nb_years, nb_groups))
 
 ## Counts, per group, per year, per clade (without ref clade)
