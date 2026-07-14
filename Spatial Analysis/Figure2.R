@@ -484,11 +484,12 @@ nboot=50
 nsim=10
                       
 GroupMax<- max(evolalignedmsmandnon, na.rm=TRUE)
-Pmax <- c(c(seq(0,17.5,2.5)) - .000001, GroupMax)
+Pmax <- c(c(seq(2.5,20,2.5)) - .000001, GroupMax)
 Pmin<- c(seq(0, 20,2.5)) - .000001
 Pmin[which(Pmin<0)]<-0
 pmid1<-(Pmin+Pmax)/2
 pmid1[9]<-21
+                      
 #last window of evaluation is >= 20 + 
 
 boot.outmsmandnonodd = matrix(NA, length(pmid1), nsim*nboot)
