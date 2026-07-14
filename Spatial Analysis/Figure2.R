@@ -134,9 +134,6 @@ nsim=10
 
 #set windows
 Pmax = c(seq(0, 20, 1))
-win = 1
-Pmin = Pmax-win
-Pmin[which(Pmin<0)]<-0
 pmid1<-Pmax
 
 boot.outallspatpmsm = matrix(NA, nrow = length(pmid1), ncol = nboot*nsim)
@@ -154,7 +151,6 @@ for(j in 1:nsim){
     prob=prob_bootstrapspatcum(tmp, geo_mat, evol_mat,time_mat, date_mat)
     boot.outallspatpmsm[,(j-1)*nboot + i] = prob
   }}
-
 
 ci1_m_tallspatpmsm = apply(boot.outallspatpmsm, 1, quantile, probs = c(0.025, 0.975, 0.5), na.rm = T)
 spatpmsmprob<- data.frame(t(ci1_m_tallspatpmsm))
@@ -184,7 +180,6 @@ spatnonpmsmprob$pmid<- pmid1
 spatnonpmsmprob$Group <- "non-pMSM"
 totspat<- rbind(spatpmsmprob, spatnonpmsmprob)
 
-
 datapmsm<- data.frame(boot.outallspatpmsm)
 datapmsm$Group <- "pMSM"
 datapmsm$pmid <- pmid1
@@ -192,23 +187,6 @@ datapmsm$pmid <- pmid1
 datanon<- data.frame(boot.outallspatnonpmsm)
 datanon$Group <- "non-pMSM"
 datanon$pmid <- pmid1
-
-
-qqnorm(boot.outallspatnonpmsm[3, ])
-qqline(boot.outallspatnonpmsm[3, ])
-
-qqnorm(boot.outallspatpmsm[3,])
-qqline(boot.outallspatpmsm[3,])
-
-var( boot.outallspatnonpmsm[3, ])/var(boot.outallspatpmsm[3,])
-
-qqnorm(boot.outallspatnonpmsm[11, ])
-qqline(boot.outallspatnonpmsm[11, ])
-
-qqnorm(boot.outallspatpmsm[11,])
-qqline(boot.outallspatpmsm[11,])
-
-var( boot.outallspatnonpmsm[11, ])/var( boot.outallspatpmsm[11, ])
 
 t.test(boot.outallspatpmsm[3,],boot.outallspatnonpmsm[3,])
 t.test(boot.outallspatpmsm[11,],boot.outallspatnonpmsm[11,])
@@ -242,14 +220,11 @@ nsim=10
 
 #set windows
 Pmax = c(seq(0, 20, 1))
-win = 1
-Pmin = Pmax-win
-Pmin[which(Pmin<0)]<-0
 pmid1<-Pmax
 
 meanpopsize<- c()
 
-#convert to km
+#convert to m
 pmax1000<- Pmax*1000
 
 nonasdat2usered <-hptgeocode3
@@ -297,7 +272,6 @@ for(i in 1:length(pmax1000)){
 msmpopsize<- data.frame(meanpopsizemsm)
 msmpopsize$Group<- "pMSM"
 colnames(msmpopsize)[1]<- "meanpopsize"
-
 
 #non-pMSM
 #convert long, lat coordinates into spatial points
@@ -370,7 +344,6 @@ datapmsm$pmid <- pmid1
 datanon<- data.frame(boot.outallspatnonpmsm)
 datanon$Group <- "non-pMSM"
 datanon$pmid <- pmid1
-
 
 datanon$popsize<- nonmsmpopsize$meanpopsize
 datapmsm$popsize<- msmpopsize$meanpopsize
@@ -449,8 +422,7 @@ rownames(c12alldef) <- rownames(t31alldef)
 pairwise_matrix_same<-c12alldef
 
 #generate matrices different type pairs pairs
-pairwise_matrix_diff <- outer(allpmsmdef$Group, allpmsmdef$Group, FUN = "==") * 1
-pairwise_matrix_diff<- 1-pairwise_matrix_diff
+pairwise_matrix_diff <- 1-outer(allpmsmdef$Group, allpmsmdef$Group, FUN = "==") * 1
 diag(pairwise_matrix_diff)<-NA
 colnames(pairwise_matrix_diff) <- allpmsmdef$Accession
 rownames(pairwise_matrix_diff) <- allpmsmdef$Accession
@@ -510,23 +482,19 @@ set.seed(111)
 
 nboot=50
 nsim=10
-Pmin = c(seq(0, 17.5,2.5), 20)
-Pmax<- c(NA,NA,NA,NA,NA,NA,NA,NA)
-windows = 2.5-.000001
-Pmax[1:8] = Pmin[1:8] + windows
-
-#last window of evaluation is >= 20 + 
+                      
 GroupMax<- max(evolalignedmsmandnon, na.rm=TRUE)
-Pmax[9] = Pmin[9] + GroupMax 
+Pmax <- c(c(seq(0,17.5,2.5)) - .000001, GroupMax)
+Pmin<- c(seq(0, 20,2.5)) - .000001
 Pmin[which(Pmin<0)]<-0
 pmid1<-(Pmin+Pmax)/2
 pmid1[9]<-21
+#last window of evaluation is >= 20 + 
 
 boot.outmsmandnonodd = matrix(NA, length(pmid1), nsim*nboot)
 boot.outmsmandnonnonnumodd = matrix(NA, length(pmid1), nsim*nboot)
 
 #pMSM
-
 for(j in 1:nsim){
   print(paste0('nsim : ', j, '/', nsim))
   geo_matmsmandnon = geoalignedmsmandnon1
@@ -583,19 +551,7 @@ p1pairs<-p1pairs+geom_errorbar(aes(ymin=cimevolpairs$X2.5., ymax=cimevolpairs$X9
 odds<- p1pairs +theme_classic()+ labs(x= "Evolutionary Time (Years)", y = "Odds Ratio", title = "Odds Ratio of Within Case-Group Transmission Pairs by Evolutionary Time") + scale_color_manual(values = c("#b21819", "#088978")) + scale_y_log10(limits = c(0.1,30))
 
 
-
 t.test(boot.outmsmandnonodd[1,],boot.outmsmandnonnonnumodd[1,])
-
-qqnorm(boot.outmsmandnonodd[1, ])
-qqline(boot.outmsmandnonodd[1, ])
-
-qqnorm(boot.outmsmandnonnonnumodd[1, ])
-qqline(boot.outmsmandnonnonnumodd[1, ])
-
-var( boot.outmsmandnonnonnumodd[1, ])/var( boot.outmsmandnonodd[1, ])
-
-
-
 
 ####################################################################Mean spatial distance by evolutionary time 
 nsim=10
@@ -603,9 +559,6 @@ nboot=50
 
 #set windows
 Pmax = seq(0,100,0.25)
-windows = 0.25
-Pmin = Pmax - windows
-Pmin[which(Pmin<0)]<-0
 pmid1<- Pmax
 
 boot.outmsmspat = matrix(NA, length(pmid1), nsim*nboot)
@@ -642,7 +595,6 @@ for(k in 1:nsim){
     }
   }
 }
-
 boot.ci1_nonspat = apply(boot.outmsmspatnon, 1, quantile, probs = c(0.025, 0.975), na.rm = T)
 boot.ci.m_nonspat = apply(boot.outmsmspatnon, 1, quantile, probs = c(0.5), na.rm = T)
 
@@ -677,24 +629,7 @@ spatevol<- p20 +theme_classic()+ labs(x= "Evolutionary Time (Years)", y = "Mean 
 
 p100<-ggplot(data=mmspat, aes(x=time, y=MeanSpat, colour=Group)) + geom_line()+ scale_color_manual(values = c("#b21819", "#088978"))
 p100<-p100+geom_ribbon(aes(ymin=cimevolspat$X2.5., ymax=cimevolspat$X97.5.,fill = Group), linetype=2, alpha=0.1)+ scale_fill_manual(values = c("#b21819", "#088978"))
-spatevol<- p100 +theme_classic()+ labs(x= "Evolutionary Time (Years)", y = "Mean Cumulative Spatial Distance (km)")
-
-
-qqnorm(boot.outmsmspat[11, ])
-qqline(boot.outmsmspat[11, ])
-
-qqnorm(boot.outmsmspatnon[11,])
-qqline(boot.outmsmspatnon[11,])
-
-var(boot.outmsmspatnon[11,])/var( boot.outmsmspat[11, ])
-
-qqnorm(boot.outmsmspat[41, ])
-qqline(boot.outmsmspat[41, ])
-
-qqnorm( boot.outmsmspatnon[41,])
-qqline( boot.outmsmspatnon[41,])
-
-var(boot.outmsmspatnon[41,])/var(boot.outmsmspat[41,])
+spatevol100<- p100 +theme_classic()+ labs(x= "Evolutionary Time (Years)", y = "Mean Cumulative Spatial Distance (km)")
 
 t.test(boot.outmsmspat[11,],boot.outmsmspatnon[11,] )
 t.test(boot.outmsmspat[41,],boot.outmsmspatnon[41,] )
