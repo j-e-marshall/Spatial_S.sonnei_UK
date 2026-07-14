@@ -108,7 +108,7 @@ print(waic_1$estimates)
 #look at trace plots and Rhat
 library(bayesplot)
 library(coda)
-tracevars <- As.mcmc.list(fit$fit, pars = c("fitness_genotypes_post_switch[1]", "fitness_genotypes_post_switch[2]","fitness_genotypes_post_switch[3]","fitness_genotypes_vector_pre_switch[1]", "fitness_genotypes_vector_pre_switch[2]" , "fitness_genotypes_vector_pre_switch[3]", "f0[1]", "f0[2]"))
+tracevars <- As.mcmc.list(fit$fit, pars = c("fitness_genotypes_vector_post_switch[1]", "fitness_genotypes_vector_post_switch[2]","fitness_genotypes_vector_post_switch[3]","fitness_genotypes_vector_pre_switch[1]", "fitness_genotypes_vector_pre_switch[2]" , "fitness_genotypes_vector_pre_switch[3]", "f0[1]", "f0[2]"))
 library(posterior)
 traceplot<- mcmc_trace(tracevars) + theme_classic() + theme(
   axis.text.x = element_text(size = 12),
