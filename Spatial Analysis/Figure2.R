@@ -16,7 +16,7 @@ sra_vec <- hptgeocode3$`Accession`
 x <- cbind(long_vec,lat_vec)
 y <- x
 
-#pariwise spatial distance matrix in meters
+#pariwise spatial distance matrix in km
 pairwise_geodist <- data.frame(geodist(x,y,paired = FALSE,measure = "haversine") /1000)
 colnames(pairwise_geodist) <- sra_vec
 rownames(pairwise_geodist) <- sra_vec
