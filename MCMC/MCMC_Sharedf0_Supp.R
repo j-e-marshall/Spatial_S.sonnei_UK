@@ -165,16 +165,6 @@ colnames(datindeppost_post)<- c("Group","Mean_post", "q2.5_post", "q972.5_post",
 datindeplong<- left_join(datindeppost_post,datindeppost_pre, by = "Group")
 datindeplong_filt<- datindeplong %>% dplyr::select(Group, Mean_pre, q2.5_pre, q972.5_pre,Mean_post, q2.5_post, q972.5_post)
 
-difference_non<- exp(nonpmsm) - exp(nonpmsmpre)
-difference_pmsm<- exp(pmsm) - exp(pmsmpre)
-difference_trav<- exp(trav) - exp(travpre)
-
-dat_diff <- rbind(
-  c("non-pMSM", round(mean(diff_nonpmsm), digits = 2), round(quantile(diff_nonpmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
-  c("pMSM", round(mean(difference_pmsm), digits = 2),round(quantile(diff_pmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
-  c("Travel",round(mean(difference_trav), digits = 2), round(quantile(difference_trav, probs =c(0.025, 0.975, 0.5)), digits = 2)))
-
-
 datindeplong_filt <- datindeplong_filt %>%
   mutate(
     estimate_CI_pre_exp = sprintf("%.2f (%.2f, %.2f)", exp(Mean_pre), exp(q2.5_pre), exp(q972.5_pre)),
@@ -352,7 +342,7 @@ for(c in 1:fit$data$nb_groups){
            col = adjustcolor('grey30', alpha.f = 0.6), 
            yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
     if(i == 1 & c == nb_groups)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
-                                       xlab="Time", ylab = 'Proportion', ylim = ylims,xlim = c(0,18),cex = cexdots,
+                                       xlab="", ylab = 'Proportion', ylim = ylims,xlim = c(0,18),cex = cexdots,
                                        main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
                                        col = adjustcolor('grey30', alpha.f = 0.6), 
                                        yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
@@ -362,7 +352,7 @@ for(c in 1:fit$data$nb_groups){
                                      col = adjustcolor('grey30', alpha.f = 0.6), 
                                      yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
     if(i > 1 & c == nb_groups)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
-                                      xlab="Time (years)", ylab = '', ylim = ylims,xlim = c(0,18), cex = cexdots,
+                                      xlab="", ylab = '', ylim = ylims,xlim = c(0,18), cex = cexdots,
                                       main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
                                       col = adjustcolor('grey30', alpha.f = 0.6), 
                                       yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
@@ -603,15 +593,6 @@ datindeppost_post<- datindep[1:3,]
 colnames(datindeppost_post)<- c("Mean_post", "q2.5_post", "q972.5_post", "q50_post")
 
 datindeplong<- left_join(datindeppost_post,datindeppost_pre, by = "Group")
-
-                                            difference_non<- exp(nonpmsm) - exp(nonpmsmpre)
-difference_pmsm<- exp(pmsm) - exp(pmsmpre)
-difference_trav<- exp(trav) - exp(travpre)
-
-dat_diff <- rbind(
-  c("non-pMSM", round(mean(diff_nonpmsm), digits = 2), round(quantile(diff_nonpmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
-  c("pMSM", round(mean(difference_pmsm), digits = 2),round(quantile(diff_pmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
-  c("Travel",round(mean(difference_trav), digits = 2), round(quantile(difference_trav, probs =c(0.025, 0.975, 0.5)), digits = 2)))
                                             
 datindeplong_filt<- datindeplong %>% dplyr::select(Group, Mean_pre, q2.5_pre, q972.5_pre,Mean_post, q2.5_post, q972.5_post)
 
@@ -793,7 +774,7 @@ for(c in 1:fit$data$nb_groups){
            col = adjustcolor('grey30', alpha.f = 0.6), 
            yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
     if(i == 1 & c == nb_groups)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
-                                       xlab="Time", ylab = 'Proportion', ylim = ylims,xlim = c(9,18),cex = cexdots,
+                                       xlab="", ylab = 'Proportion', ylim = ylims,xlim = c(9,18),cex = cexdots,
                                        main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
                                        col = adjustcolor('grey30', alpha.f = 0.6), 
                                        yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
@@ -803,7 +784,7 @@ for(c in 1:fit$data$nb_groups){
                                      col = adjustcolor('grey30', alpha.f = 0.6), 
                                      yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
     if(i > 1 & c == nb_groups)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
-                                      xlab="Time (years)", ylab = '', ylim = ylims,xlim = c(9,18), cex = cexdots,
+                                      xlab="", ylab = '', ylim = ylims,xlim = c(9,18), cex = cexdots,
                                       main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
                                       col = adjustcolor('grey30', alpha.f = 0.6), 
                                       yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
