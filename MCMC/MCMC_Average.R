@@ -209,24 +209,24 @@ for(c in 1:fit$data$nb_groups){
     ylims = c(0,1)
     if(pch_times>nb_years){pch_times=nb_years-1}
     if(pch_times<0){pch_times=1}  
-    if(i == 1 & c < 18)  { print(' yay')
+    if(i == 1 & c < nb_groups)  { print(' yay')
       plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
            xlab="", ylab = 'Proportion', ylim = ylims, xlim = c(0,18),cex = cexdots,
            main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
            col = adjustcolor('grey30', alpha.f = 0.6), 
            yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
-    if(i == 1 & c == 18)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
-                                xlab="Time", ylab = 'Proportion', ylim = ylims,xlim = c(0,18),cex = cexdots,
+    if(i == 1 & c == nb_groups)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
+                                xlab="", ylab = 'Proportion', ylim = ylims,xlim = c(0,18),cex = cexdots,
                                 main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
                                 col = adjustcolor('grey30', alpha.f = 0.6), 
                                 yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
-    if(i > 1 & c < 18)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
+    if(i > 1 & c < nb_groups)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
                               xlab="", ylab = '', ylim = ylims,xlim = c(0,18),cex = cexdots,
                               main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
                               col = adjustcolor('grey30', alpha.f = 0.6), 
                               yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
-    if(i > 1 & c == 18)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
-                               xlab="Time (years)", ylab = '', ylim = ylims,xlim = c(0,18), cex = cexdots,
+    if(i > 1 & c == nb_groups)  {plot(1:nb_years, d_m, type="p", pch=c(rep(17, pch_times-1), rep(17, nb_years-pch_times+1)), bty = 'n',
+                               xlab="", ylab = '', ylim = ylims,xlim = c(0,18), cex = cexdots,
                                main = paste0(group[c], ' ',titles[i]), cex.main = cexmain,
                                col = adjustcolor('grey30', alpha.f = 0.6), 
                                yaxt = 'n', xaxt = 'n', cex.lab = cexlab, xaxs = "i",yaxs="i")}
