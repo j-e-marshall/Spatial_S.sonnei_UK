@@ -170,8 +170,8 @@ difference_pmsm<- exp(pmsm) - exp(pmsmpre)
 difference_trav<- exp(trav) - exp(travpre)
 
 dat_diff <- rbind(
-  c("non-pMSM", round(mean(diff_nonpmsm), digits = 2), round(quantile(diff_nonpmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
-  c("pMSM", round(mean(difference_pmsm), digits = 2),round(quantile(diff_pmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
+  c("non-pMSM", round(mean(difference_non), digits = 2), round(quantile(difference_non, probs = c(0.025, 0.975, 0.5)), digits = 2)),
+  c("pMSM", round(mean(difference_pmsm), digits = 2),round(quantile(difference_pmsm, probs = c(0.025, 0.975, 0.5)), digits = 2)),
   c("Travel",round(mean(difference_trav), digits = 2), round(quantile(difference_trav, probs =c(0.025, 0.975, 0.5)), digits = 2)))
 
 datindeplong_filt<- datindeplong %>% dplyr::select(Group, Mean_pre, q2.5_pre, q972.5_pre,Mean_post, q2.5_post, q972.5_post)
