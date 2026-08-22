@@ -316,57 +316,6 @@ plot1 <- ggplot(data=totbucketsinc2004years, aes(x=year, y=cases, fill = Group))
                                                                                                                                                                                                                                                                                                panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
 plot2 <- ggplot(data=totbucketsunder2008years, aes(x=year, y=cases, fill = Group)) + theme_classic() + geom_bar(position="stack", stat="identity") + scale_y_continuous("Isolates (n)", expand = c(0, 0)) + scale_fill_manual(values = c("#088978","#f85c06","#b21819")) +labs(x="Year")+ theme(panel.border = element_blank(), panel.grid.major = element_blank())
 
-
-#Supp figs.
-hptgeocode3 <- hptgeocode3 %>% mutate(pMSMfinal = if_else(Group == "pMSM",1,0), highrisktravel = if_else(Group == "Travel",1,0),domesticnonpmsm = if_else(Group == "non-pMSM",1,0))
-hptgeocode3_sum <- hptgeocode3 %>%
-  group_by(year) %>%
-  summarise( pMSM = sum(pMSMfinal),Travel = sum(highrisktravel),nonpMSM = sum(domesticnonpmsm)) %>%
-  pivot_longer(-year, names_to = "Group", values_to = "Tot") 
-
-hptgeocode3_sum_proplong <- hptgeocode3_sum %>%
-  group_by(year) %>%
-  mutate(prop = Tot / sum(Tot))
-
-propcases<- ggplot(hptgeocode3_sum_proplong, aes(x = factor(year), y = prop, fill = Group)) +
-  geom_col() +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(
-    x = "Year",
-    y = "Proportion of Cases",
-    fill = "Group"
-  ) + theme_minimal() + scale_fill_manual(values = c( "#b21819","#088978","#f85c06"))+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-
-#relative proportion of Cip, CRO, AZM, XDR
-hptgeocode3 <- hptgeocode3 %>% mutate(XDR = if_else(AZM ==1 & CIP==1 & CRO==1,1,0))
-hptgeocode3_relpropres <- hptgeocode3 %>% group_by(year, Group) %>% summarise(total = n(), azm = sum(AZM), cip = sum(CIP), cro = sum(CRO), xdr = sum(XDR)) 
-
-hptgeocode3_relpropres <- hptgeocode3_relpropres %>% mutate(propazm = azm/total, propcip = cip/total, propcro = cro/total, propxdr = xdr/total)
-
-hptgeocode3_relpropres_long <- hptgeocode3_relpropres %>%
-  select(year, Group, propazm, propcip, propcro, propxdr) %>%
-  pivot_longer(
-    cols = starts_with("prop"),
-    names_to = "Res",
-    values_to = "Proportion"
-  )
-
-plotprop<- ggplot(hptgeocode3_relpropres_long,
-                  aes(x = year, y = Proportion, color = Res)) +
-  geom_point() +
-  geom_line()+
-  facet_wrap(~Group, ncol = 1) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(
-    x = "Year",
-    y = "Resistant (%)",
-    color = "AMR Determinant"
-  ) +
-  theme_classic()+scale_color_brewer(palette = "RdYlBu")
-
-
 library(tidyverse)
 library(sf)
 library(tmap)
@@ -455,8 +404,10 @@ mapsmall<- ggplot() +
   geom_sf(data = lonpoints, aes(size = BubblesCat, alpha = 0.8)) + theme_classic()
 
 #proportion pMSM of isolates in London/Manchester & elsewhere
-dtrjitterlontman <-dtrjitter %>% mutate(londonmancheck = ifelse(grepl("London|Manch",HPT),1,0))
-dtrjitterlontman<- dtrjitterlontman%>% group_by(londonmancheck) %>% summarize(pmsm = sum(sumpMSM), ncases = sum(`Cases (N)`)) %>% mutate(propmsm = binom.confint(x = pmsm,n = ncases, conf.level = 0.95, method = c("wilson"))) 
+dtrjitterlontman <-dtrjitter %>% mutate(londonmancheck = ifelse(grepl("London|Manch",HPT),1,0))%>% 
+group_by(londonmancheck) %>% 
+summarize(pmsm = sum(sumpMSM), ncases = sum(`Cases (N)`)) %>% 
+mutate(propmsm = binom.confint(x = pmsm,n = ncases, conf.level = 0.95, method = c("wilson"))) 
 dtrjitterlontman$londonmancheck<- factor(dtrjitterlontman$londonmancheck)
 dtrjitterlontman <- dtrjitterlontman %>% mutate(Location = if_else(londonmancheck == 1, "London & Manchester", "Other"))
 propmsmfig<- ggplot(aes(y=dtrjitterlontman$propmsm$mean, x=Location), data = dtrjitterlontman)  +geom_point() + theme_classic()+geom_errorbar(aes(ymin=dtrjitterlontman$propmsm$lower, ymax=dtrjitterlontman$propmsm$upper, width = 0.2 ))+ scale_x_discrete(name = "HPT of Isolate Collection")+labs(y="Proportion pMSM")+scale_y_continuous(limits=c(0, .5))
@@ -473,7 +424,7 @@ totbucketssum$CIP[totbucketssum$CIP ==1] <- "R"
 totbucketssum$Group<- factor(totbucketssum$Group, levels = c("pMSM", "non-pMSM", "Travel"))
 
 col_vector = c("#088978","#b21819","#f85c06")
-colnames(totbucketssum)[2:4]<- c("Azithromycin","Ceftriaxone","Ciprofloxacin")
+colnames(totbucketssum)[2:4]<- c("Ciprofloxacin", "Azithromycin","Ceftriaxone")
 p<- alluvial_wide( dplyr::select(totbucketssum,Group,Ciprofloxacin, Azithromycin, Ceftriaxone), fill_by = 'first_variable', stratum_labels  = F, col_vector_flow = col_vector) + theme_classic() 
 
 alluv<- p+ geom_text(stat = "stratum", aes(label = after_stat(stratum)),
