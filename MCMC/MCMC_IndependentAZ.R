@@ -49,7 +49,7 @@ for(i in 1:3) {
   fit_delay <- sampling(model.MCMC, data = data.MCMC, 
                         show_messages = TRUE, 
                         chains = 1,cores = 1,iter= 10000, chain_id = i,
-                        control = list(adapt_delta = 0.97, max_treedepth = 10), init = list(list(f0 = f0_init(data.MCMC$nb_groups, data.MCMC$nb_genotypes),fitness_genotypes_post_vacc = array(rep(rnorm(1,0,0.01),3)))))
+                        control = list(adapt_delta = 0.97, max_treedepth = 10), init = list(list(f0 = f0_init(data.MCMC$nb_groups, data.MCMC$nb_genotypes),fitness_genotypes_post_switch = array(rep(rnorm(1,0,0.01),3)))))
   fit = list(fit=fit_delay,
              data= data.MCMC)
   Chains=rstan::extract(fit$fit)
@@ -100,7 +100,7 @@ library(bayesplot)
 library(coda)
 library(posterior)
 
-tracevars <- As.mcmc.list(fit$fit, pars = c("fitness_genotypes_post_vacc[1]", "fitness_genotypes_post_vacc[2]","fitness_genotypes_post_vacc[3]", "f0[1,1]", "f0[1,2]", "f0[2,1]", "f0[2,2]", "f0[3,1]", "f0[3,2]"))
+tracevars <- As.mcmc.list(fit$fit, pars = c("fitness_genotypes_post_switch[1]", "fitness_genotypes_post_switch[2]","fitness_genotypes_post_switch[3]", "f0[1,1]", "f0[1,2]", "f0[2,1]", "f0[2,2]", "f0[3,1]", "f0[3,2]"))
 
 
 traceplot<- mcmc_trace(tracevars) + theme_classic() + theme(
@@ -121,9 +121,9 @@ library(binom)
 ## Load fit
 ## Chains
 Chains=rstan::extract(fit$fit)
-non<- as.matrix(fit$fit, pars = c("fitness_genotypes_vector_post_vacc[1]"))
-pmsm <- as.matrix(fit$fit, pars = c("fitness_genotypes_vector_post_vacc[2]"))
-trav <- as.matrix(fit$fit, pars = c("fitness_genotypes_vector_post_vacc[3]"))
+non<- as.matrix(fit$fit, pars = c("fitness_genotypes_vector_post_switch[1]"))
+pmsm <- as.matrix(fit$fit, pars = c("fitness_genotypes_vector_post_switch[2]"))
+trav <- as.matrix(fit$fit, pars = c("fitness_genotypes_vector_post_switch[3]"))
 
 datindep<- data.frame("Group")
 datindep[1,1] <-"pMSM"
@@ -140,7 +140,7 @@ datindep[3,1] <-"Travel"
 datindep[3,2] <-mean(trav)
 datindep[3,3:5] <-quantile(trav, c(0.025,0.975,0.5))
 datindep2<- datindep
-datindep2[,3:6]<- exp(datindep2[,3:6])
+datindep2[,2:5]<- exp(datindep2[,2:5])
 
 
 ############################################################################################
